@@ -1940,6 +1940,18 @@
         <div style="height:110px;"></div>
       </div>
 
+      <!-- 资讯 & 新闻: full list of all news items (Home only ever surfaces one at random) -->
+      <div id="tabNewsList" style="display:none;">
+        <div id="newsListBackRow" style="display:flex;align-items:center;gap:8px;padding:16px 18px 4px;cursor:pointer;color:var(--text-muted);font-size:12.5px;font-weight:600;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>返回</div>
+        <div style="padding:10px 18px 6px;display:flex;align-items:center;gap:9px;">
+          <div style="width:28px;height:28px;border-radius:8px;background:var(--gold-dim);display:flex;align-items:center;justify-content:center;color:var(--gold);flex-shrink:0;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg></div>
+          <div style="font-family:var(--font-display);font-size:19px;font-weight:800;color:var(--text);">资讯 &amp; 新闻</div>
+        </div>
+        <div style="margin:8px 18px 14px;font-size:12px;color:var(--desc-muted);line-height:1.5;">黄金市场动态、知识科普与官方公告，一次看完</div>
+        <div id="newsListContainer" style="padding:0 0 20px;"></div>
+        <div style="height:110px;"></div>
+      </div>
+
       <div id="tabArchive" style="display:none;">
         <div id="archiveBackRow" style="display:flex;align-items:center;gap:8px;padding:16px 18px 4px;cursor:pointer;color:var(--text-muted);font-size:12.5px;font-weight:600;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>返回</div>
         <div style="padding:10px 18px 6px;display:flex;align-items:center;gap:9px;">
@@ -2426,7 +2438,7 @@
         <div class="eyebrow">快捷入口</div>
         <div id="menuLeaderboardRow" class="menu-row"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>排行榜</div>
         <div id="menuEventsRow" class="menu-row"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="16" rx="2.5"/><path d="M3.5 10h17"/><path d="M8 3v4"/><path d="M16 3v4"/></svg>活动与推广<span class="badge">2</span></div>
-        <div class="menu-row"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>资讯 &amp; 新闻</div>
+        <div id="menuNewsRow" class="menu-row"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>资讯 &amp; 新闻</div>
         <div class="menu-row"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>邀请有奖</div>
         <div class="menu-divider"></div>
         <div class="settings-row" style="cursor:default;">
@@ -4570,6 +4582,17 @@
       if (el) el.addEventListener('click', closeNewsDetail);
     });
 
+    // 资讯 & 新闻 list page: shows every item in NEWS_POOL (Home only ever surfaces one at
+    // random), each card opening the same detail modal as the Home feed's news card
+    var newsListContainer = document.getElementById('newsListContainer');
+    if (newsListContainer) {
+      NEWS_POOL.forEach(function(newsItem){
+        newsListContainer.appendChild(buildNewsCard(newsItem));
+      });
+    }
+    var newsListBackRow = document.getElementById('newsListBackRow');
+    if (newsListBackRow) newsListBackRow.addEventListener('click', function(){ showTab('home'); });
+
     if (Math.random() > SHOW_CHANCE) return; // most visits: no news card, simulating "random" appearance
 
     var item = null;
@@ -5487,6 +5510,9 @@
   zhToEn['本周'] = 'This Week';
   zhToEn['本月'] = 'This Month';
   zhToEn['总榜'] = 'All-Time';
+  // 资讯 & 新闻 (news list page)
+  zhToEn['资讯 & 新闻'] = 'News & Updates';
+  zhToEn['黄金市场动态、知识科普与官方公告，一次看完'] = 'Market moves, gold 101, and official announcements — all in one place';
   zhToEn['约1分钟'] = 'About 1 min';
   zhToEn['生肖八字：年度运势'] = 'Zodiac & BaZi: Annual Fortune';
   zhToEn['输入你的生肖与出生日期，为你计算专属的黄金年度运势'] = 'Enter your zodiac sign and birth date for your personal annual gold fortune';
@@ -5610,7 +5636,7 @@
       btn.addEventListener('click', toggleMenu);
     });
     backdrop.addEventListener('click', closeMenu);
-    panel.querySelectorAll('.menu-row:not(.logout):not(#menuLeaderboardRow):not(#menuEventsRow)').forEach(function(row){
+    panel.querySelectorAll('.menu-row:not(.logout):not(#menuLeaderboardRow):not(#menuEventsRow):not(#menuNewsRow)').forEach(function(row){
       row.addEventListener('click', function(){
         closeMenu();
         requireLogin();
@@ -5627,6 +5653,12 @@
       closeMenu();
       if (requireLogin()) return;
       showTab('events');
+    });
+    var menuNewsRow = document.getElementById('menuNewsRow');
+    if (menuNewsRow) menuNewsRow.addEventListener('click', function(){
+      closeMenu();
+      if (requireLogin()) return;
+      showTab('newsList');
     });
 
     // swipe gesture: drag from the left edge to open the side menu, drag left to close it
@@ -6022,6 +6054,7 @@
   var tabMall = document.getElementById('tabMall');
   var tabAwards = document.getElementById('tabAwards');
   var tabLeaderboard = document.getElementById('tabLeaderboard');
+  var tabNewsList = document.getElementById('tabNewsList');
   var tabArchive = document.getElementById('tabArchive');
   var tabPuzzle = document.getElementById('tabPuzzle');
   var tabQuiz = document.getElementById('tabQuiz');
@@ -6061,6 +6094,7 @@
       setScreen(tabMall, name === 'mall');
       setScreen(tabAwards, name === 'awards');
       setScreen(tabLeaderboard, name === 'leaderboard');
+      setScreen(tabNewsList, name === 'newsList');
       setScreen(tabArchive, name === 'archive');
       setScreen(tabPuzzle, name === 'puzzle');
       setScreen(tabQuiz, name === 'quiz');
