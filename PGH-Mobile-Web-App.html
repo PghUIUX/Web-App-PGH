@@ -176,6 +176,12 @@
     .screen-enter{animation:none;}
   }
   .award-card:last-child{margin-bottom:0;}
+  .lb-period-tab{flex:1;text-align:center;background:var(--surface);color:var(--text-muted);font-size:12px;font-weight:700;padding:9px 0;border-radius:10px;cursor:pointer;box-shadow:var(--card-shadow);transition:transform .12s ease;}
+  .lb-period-tab:active{transform:scale(.97);}
+  .lb-period-tab.is-active{background:var(--gold);color:var(--ink);}
+  .lb-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface);border-radius:12px;margin-bottom:8px;box-shadow:var(--card-shadow);}
+  .lb-row.is-me{border:1.5px solid var(--gold);background:var(--gold-dim);}
+  .lb-avatar{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:11.5px;color:var(--ink);}
 
   .top{padding:28px 24px 6px;text-align:center;}
   .top .eyebrow{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-faint);}
@@ -1913,6 +1919,27 @@
         <div style="height:130px;"></div>
       </div>
 
+      <!-- 排行榜: points leaderboard — week/month/all-time, top-3 podium + ranked list + your own position -->
+      <div id="tabLeaderboard" style="display:none;">
+        <div id="leaderboardBackRow" style="display:flex;align-items:center;gap:8px;padding:16px 18px 4px;cursor:pointer;color:var(--text-muted);font-size:12.5px;font-weight:600;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>返回</div>
+        <div style="padding:10px 18px 6px;display:flex;align-items:center;gap:9px;">
+          <div style="width:28px;height:28px;border-radius:8px;background:var(--gold-dim);display:flex;align-items:center;justify-content:center;color:var(--gold);flex-shrink:0;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></div>
+          <div style="font-family:var(--font-display);font-size:19px;font-weight:800;color:var(--text);">排行榜</div>
+        </div>
+        <div id="lbSubtitle" style="margin:8px 18px 14px;font-size:12px;color:var(--desc-muted);line-height:1.5;">本周排名 &middot; 每周一 00:00 重置</div>
+
+        <div style="display:flex;gap:8px;margin:0 18px 20px;">
+          <div class="lb-period-tab is-active" data-period="week">本周</div>
+          <div class="lb-period-tab" data-period="month">本月</div>
+          <div class="lb-period-tab" data-period="all">总榜</div>
+        </div>
+
+        <div id="lbPodium" style="display:flex;align-items:flex-end;justify-content:center;gap:8px;margin:0 18px 20px;"></div>
+        <div id="lbMyRank" style="margin:0 18px 16px;"></div>
+        <div id="lbList" style="padding:0 18px 20px;"></div>
+        <div style="height:110px;"></div>
+      </div>
+
       <div id="tabArchive" style="display:none;">
         <div id="archiveBackRow" style="display:flex;align-items:center;gap:8px;padding:16px 18px 4px;cursor:pointer;color:var(--text-muted);font-size:12.5px;font-weight:600;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>返回</div>
         <div style="padding:10px 18px 6px;display:flex;align-items:center;gap:9px;">
@@ -2397,7 +2424,7 @@
           </div>
         </div>
         <div class="eyebrow">快捷入口</div>
-        <div class="menu-row"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>排行榜</div>
+        <div id="menuLeaderboardRow" class="menu-row"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>排行榜</div>
         <div class="menu-row"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="16" rx="2.5"/><path d="M3.5 10h17"/><path d="M8 3v4"/><path d="M16 3v4"/></svg>活动与推广<span class="badge">2</span></div>
         <div class="menu-row"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>资讯 &amp; 新闻</div>
         <div class="menu-row"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>邀请有奖</div>
@@ -3724,6 +3751,157 @@
         });
       });
     }
+  })();
+
+  // 排行榜 (leaderboard): points ranking, three periods, top-3 podium + list + your own position
+  (function(){
+    var tabEl = document.getElementById('tabLeaderboard');
+    if (!tabEl) return;
+    var podiumEl = document.getElementById('lbPodium');
+    var myRankEl = document.getElementById('lbMyRank');
+    var listEl = document.getElementById('lbList');
+    var subtitleEl = document.getElementById('lbSubtitle');
+    var tabs = Array.prototype.slice.call(tabEl.querySelectorAll('.lb-period-tab'));
+
+    var DATA = {
+      week: {
+        subZh: '本周排名 &middot; 每周一 00:00 重置', subEn: "This week's ranking &middot; resets every Monday at midnight",
+        me: { rank: 47, points: 210 },
+        list: [
+          { name:'Priya Nathan', initials:'PN', hue:250, points:1280 },
+          { name:'Marcus Lee', initials:'ML', hue:20, points:1150 },
+          { name:'Amy Tan', initials:'AT', hue:340, points:1020 },
+          { name:'Kevin Ong', initials:'KO', hue:85, points:890 },
+          { name:'Sarah Lim', initials:'SL', hue:190, points:840 },
+          { name:'Wei Jie', initials:'WJ', hue:230, points:780 },
+          { name:'Michelle Wong', initials:'MW', hue:280, points:715 },
+          { name:'Daniel Ooi', initials:'DO', hue:150, points:680 },
+          { name:'Farah Aziz', initials:'FA', hue:60, points:640 },
+          { name:'Jason Tan', initials:'JT', hue:300, points:600 },
+          { name:'Ling Wei', initials:'LW', hue:170, points:560 },
+          { name:'Ravi Kumar', initials:'RK', hue:40, points:510 },
+          { name:'Nurul Huda', initials:'NH', hue:210, points:470 },
+          { name:'Chong Mei', initials:'CM', hue:320, points:430 },
+          { name:'Benjamin Goh', initials:'BG', hue:100, points:390 }
+        ]
+      },
+      month: {
+        subZh: '本月排名 &middot; 每月1号 00:00 重置', subEn: "This month's ranking &middot; resets on the 1st of each month",
+        me: { rank: 62, points: 1180 },
+        list: [
+          { name:'Marcus Lee', initials:'ML', hue:20, points:6800 },
+          { name:'Priya Nathan', initials:'PN', hue:250, points:6450 },
+          { name:'Amy Tan', initials:'AT', hue:340, points:5920 },
+          { name:'Sarah Lim', initials:'SL', hue:190, points:5380 },
+          { name:'Kevin Ong', initials:'KO', hue:85, points:5100 },
+          { name:'Wei Jie', initials:'WJ', hue:230, points:4760 },
+          { name:'Michelle Wong', initials:'MW', hue:280, points:4320 },
+          { name:'Vincent Chua', initials:'VC', hue:10, points:4050 },
+          { name:'Aisha Rahman', initials:'AR', hue:270, points:3780 },
+          { name:'Daniel Ooi', initials:'DO', hue:150, points:3540 },
+          { name:'Farah Aziz', initials:'FA', hue:60, points:3290 },
+          { name:'Jason Tan', initials:'JT', hue:300, points:3010 },
+          { name:'Ling Wei', initials:'LW', hue:170, points:2860 },
+          { name:'Ravi Kumar', initials:'RK', hue:40, points:2640 },
+          { name:'Nurul Huda', initials:'NH', hue:210, points:2420 }
+        ]
+      },
+      all: {
+        subZh: '总榜 &middot; 累计全部历史积分', subEn: 'All-time &middot; total points ever earned',
+        me: { rank: 128, points: 3240 },
+        list: [
+          { name:'Amy Tan', initials:'AT', hue:340, points:24600 },
+          { name:'Marcus Lee', initials:'ML', hue:20, points:23150 },
+          { name:'Priya Nathan', initials:'PN', hue:250, points:21800 },
+          { name:'Sarah Lim', initials:'SL', hue:190, points:19400 },
+          { name:'Wei Jie', initials:'WJ', hue:230, points:18200 },
+          { name:'Kevin Ong', initials:'KO', hue:85, points:17650 },
+          { name:'Michelle Wong', initials:'MW', hue:280, points:16900 },
+          { name:'Vincent Chua', initials:'VC', hue:10, points:15300 },
+          { name:'Aisha Rahman', initials:'AR', hue:270, points:14700 },
+          { name:'Daniel Ooi', initials:'DO', hue:150, points:13850 },
+          { name:'Jason Tan', initials:'JT', hue:300, points:12900 },
+          { name:'Farah Aziz', initials:'FA', hue:60, points:12100 },
+          { name:'Ling Wei', initials:'LW', hue:170, points:11400 },
+          { name:'Chong Mei', initials:'CM', hue:320, points:10650 },
+          { name:'Ravi Kumar', initials:'RK', hue:40, points:9800 }
+        ]
+      }
+    };
+
+    function avatarHtml(p, size){
+      return '<div class="lb-avatar" style="width:' + size + 'px;height:' + size + 'px;font-size:' + (size * 0.36) + 'px;background:radial-gradient(circle at 30% 25%,oklch(0.72 0.11 ' + p.hue + '),oklch(0.5 0.1 ' + p.hue + ') 75%);">' + p.initials + '</div>';
+    }
+
+    function renderPodium(list){
+      var order = [list[1], list[0], list[2]]; // 2nd, 1st, 3rd — center-tall layout
+      var heights = [58, 78, 42];
+      var barColors = [
+        'linear-gradient(155deg,#E7EAF0,#9AA3B2)',
+        'linear-gradient(155deg,#F6DE9C,#B8862E)',
+        'linear-gradient(155deg,#E7B48B,#A5623A)'
+      ];
+      var ranks = [2, 1, 3];
+      var avatarSizes = [50, 62, 46];
+      var html = '';
+      for (var i = 0; i < 3; i++) {
+        var p = order[i];
+        if (!p) continue;
+        html += '<div style="flex:1;max-width:110px;text-align:center;">' +
+          (ranks[i] === 1 ? '<svg width="22" height="22" viewBox="0 0 24 24" fill="var(--gold)" stroke="none" style="margin-bottom:2px;"><path d="M3 6l4 3 5-6 5 6 4-3-2 12H5L3 6Z"/></svg>' : '<div style="height:22px;"></div>') +
+          avatarHtml(p, avatarSizes[i]) +
+          '<div style="font-size:11px;font-weight:700;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + p.name + '</div>' +
+          '<div style="font-size:10px;color:var(--gold);font-weight:800;margin-top:1px;">' + p.points.toLocaleString() + '</div>' +
+          '<div style="height:' + heights[i] + 'px;background:' + barColors[i] + ';border-radius:10px 10px 0 0;margin-top:8px;display:flex;align-items:flex-start;justify-content:center;padding-top:6px;font-family:var(--font-display);font-size:18px;font-weight:800;color:var(--ink);">' + ranks[i] + '</div>' +
+        '</div>';
+      }
+      podiumEl.innerHTML = html;
+    }
+
+    function renderMyRank(me){
+      myRankEl.innerHTML =
+        '<div class="lb-row is-me">' +
+          '<div style="width:26px;text-align:center;font-family:var(--font-display);font-weight:800;font-size:13px;color:var(--gold);flex-shrink:0;">#' + me.rank + '</div>' +
+          avatarHtml({ initials:'我', hue:45 }, 32) +
+          '<div style="flex:1;min-width:0;">' +
+            '<div style="font-size:12.5px;font-weight:700;">' + T('我的排名', 'My Rank') + '</div>' +
+          '</div>' +
+          '<div style="font-family:var(--font-display);font-size:13px;font-weight:800;color:var(--gold);flex-shrink:0;">' + me.points.toLocaleString() + ' pts</div>' +
+        '</div>';
+    }
+
+    function renderList(list){
+      var html = '';
+      for (var i = 3; i < list.length; i++) {
+        var p = list[i];
+        var rank = i + 1;
+        html += '<div class="lb-row">' +
+          '<div style="width:26px;text-align:center;font-family:var(--font-display);font-weight:800;font-size:13px;color:var(--text-faint);flex-shrink:0;">' + rank + '</div>' +
+          avatarHtml(p, 32) +
+          '<div style="flex:1;min-width:0;font-size:12.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + p.name + '</div>' +
+          '<div style="font-family:var(--font-display);font-size:12.5px;font-weight:700;color:var(--text-muted);flex-shrink:0;">' + p.points.toLocaleString() + '</div>' +
+        '</div>';
+      }
+      listEl.innerHTML = html;
+    }
+
+    function render(period){
+      var d = DATA[period];
+      if (!d) return;
+      if (subtitleEl) subtitleEl.innerHTML = T(d.subZh, d.subEn);
+      renderPodium(d.list);
+      renderMyRank(d.me);
+      renderList(d.list);
+    }
+
+    tabs.forEach(function(t){
+      t.addEventListener('click', function(){
+        tabs.forEach(function(x){ x.classList.remove('is-active'); });
+        t.classList.add('is-active');
+        render(t.getAttribute('data-period'));
+      });
+    });
+    render('week');
   })();
 
   // gold life archive: summary totals + add-record modal
@@ -5298,6 +5476,10 @@
   zhToEn['累积参与线下活动，解锁更高的会员身份'] = 'Keep attending offline events to unlock higher member tiers';
   zhToEn['立即报名'] = 'Register Now';
   zhToEn['已报名 ✓'] = 'Registered ✓';
+  // 排行榜 (leaderboard)
+  zhToEn['本周'] = 'This Week';
+  zhToEn['本月'] = 'This Month';
+  zhToEn['总榜'] = 'All-Time';
   zhToEn['约1分钟'] = 'About 1 min';
   zhToEn['生肖八字：年度运势'] = 'Zodiac & BaZi: Annual Fortune';
   zhToEn['输入你的生肖与出生日期，为你计算专属的黄金年度运势'] = 'Enter your zodiac sign and birth date for your personal annual gold fortune';
@@ -5421,11 +5603,17 @@
       btn.addEventListener('click', toggleMenu);
     });
     backdrop.addEventListener('click', closeMenu);
-    panel.querySelectorAll('.menu-row:not(.logout)').forEach(function(row){
+    panel.querySelectorAll('.menu-row:not(.logout):not(#menuLeaderboardRow)').forEach(function(row){
       row.addEventListener('click', function(){
         closeMenu();
         requireLogin();
       });
+    });
+    var menuLeaderboardRow = document.getElementById('menuLeaderboardRow');
+    if (menuLeaderboardRow) menuLeaderboardRow.addEventListener('click', function(){
+      closeMenu();
+      if (requireLogin()) return;
+      showTab('leaderboard');
     });
 
     // swipe gesture: drag from the left edge to open the side menu, drag left to close it
@@ -5820,6 +6008,7 @@
   var tabProfile = document.getElementById('tabProfile');
   var tabMall = document.getElementById('tabMall');
   var tabAwards = document.getElementById('tabAwards');
+  var tabLeaderboard = document.getElementById('tabLeaderboard');
   var tabArchive = document.getElementById('tabArchive');
   var tabPuzzle = document.getElementById('tabPuzzle');
   var tabQuiz = document.getElementById('tabQuiz');
@@ -5858,6 +6047,7 @@
       setScreen(tabProfile, name === 'profile');
       setScreen(tabMall, name === 'mall');
       setScreen(tabAwards, name === 'awards');
+      setScreen(tabLeaderboard, name === 'leaderboard');
       setScreen(tabArchive, name === 'archive');
       setScreen(tabPuzzle, name === 'puzzle');
       setScreen(tabQuiz, name === 'quiz');
@@ -5896,6 +6086,8 @@
     if (profileAwardsCard) profileAwardsCard.addEventListener('click', function(){ if (requireLogin()) return; showTab('awards'); });
     var awardsBackRow = document.getElementById('awardsBackRow');
     if (awardsBackRow) awardsBackRow.addEventListener('click', function(){ showTab('profile'); });
+    var leaderboardBackRow = document.getElementById('leaderboardBackRow');
+    if (leaderboardBackRow) leaderboardBackRow.addEventListener('click', function(){ showTab('home'); });
     var profileArchiveCard = document.getElementById('profileArchiveCard');
     if (profileArchiveCard) profileArchiveCard.addEventListener('click', function(){ if (requireLogin()) return; showTab('archive'); });
     var archiveBackRow = document.getElementById('archiveBackRow');
