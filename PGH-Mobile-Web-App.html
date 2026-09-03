@@ -3835,27 +3835,30 @@
 
     function renderPodium(list){
       var order = [list[1], list[0], list[2]]; // 2nd, 1st, 3rd — center-tall layout
-      var heights = [58, 78, 42];
+      var barHeights = [46, 62, 36];
       var barColors = [
         'linear-gradient(155deg,#E7EAF0,#9AA3B2)',
         'linear-gradient(155deg,#F6DE9C,#B8862E)',
         'linear-gradient(155deg,#E7B48B,#A5623A)'
       ];
       var ranks = [2, 1, 3];
-      var avatarSizes = [50, 62, 46];
-      var html = '';
+      // avatars are the same size and sit on an identical-height crown slot for all three
+      // columns, so the people row always lines up pixel-for-pixel — only the step below varies
+      var peopleHtml = '', stepsHtml = '';
       for (var i = 0; i < 3; i++) {
         var p = order[i];
         if (!p) continue;
-        html += '<div style="flex:1;max-width:110px;text-align:center;">' +
-          (ranks[i] === 1 ? '<svg width="22" height="22" viewBox="0 0 24 24" fill="var(--gold)" stroke="none" style="margin-bottom:2px;"><path d="M3 6l4 3 5-6 5 6 4-3-2 12H5L3 6Z"/></svg>' : '<div style="height:22px;"></div>') +
-          avatarHtml(p, avatarSizes[i]) +
+        peopleHtml += '<div style="flex:1;max-width:104px;text-align:center;">' +
+          '<div style="height:20px;display:flex;align-items:flex-end;justify-content:center;">' + (ranks[i] === 1 ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="var(--gold)" stroke="none"><path d="M3 6l4 3 5-6 5 6 4-3-2 12H5L3 6Z"/></svg>' : '') + '</div>' +
+          avatarHtml(p, 52) +
           '<div style="font-size:11px;font-weight:700;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + p.name + '</div>' +
           '<div style="font-size:10px;color:var(--gold);font-weight:800;margin-top:1px;">' + p.points.toLocaleString() + '</div>' +
-          '<div style="height:' + heights[i] + 'px;background:' + barColors[i] + ';border-radius:10px 10px 0 0;margin-top:8px;display:flex;align-items:flex-start;justify-content:center;padding-top:6px;font-family:var(--font-display);font-size:18px;font-weight:800;color:var(--ink);">' + ranks[i] + '</div>' +
         '</div>';
+        stepsHtml += '<div style="flex:1;max-width:104px;height:' + barHeights[i] + 'px;background:' + barColors[i] + ';border-radius:10px 10px 0 0;display:flex;align-items:flex-start;justify-content:center;padding-top:6px;font-family:var(--font-display);font-size:18px;font-weight:800;color:var(--ink);">' + ranks[i] + '</div>';
       }
-      podiumEl.innerHTML = html;
+      podiumEl.innerHTML =
+        '<div style="display:flex;justify-content:center;gap:8px;">' + peopleHtml + '</div>' +
+        '<div style="display:flex;align-items:flex-end;justify-content:center;gap:8px;margin-top:10px;">' + stepsHtml + '</div>';
     }
 
     function renderMyRank(me){
