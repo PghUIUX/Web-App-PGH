@@ -3,7 +3,7 @@
 <title>PGH Mobile Web App</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
     --navy-brand:#011E41; --navy:color-mix(in srgb, var(--navy-brand) 45%, #0c0d0f 55%); --gold:#E0B24A;
@@ -182,6 +182,21 @@
   .lb-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface);border-radius:12px;margin-bottom:8px;box-shadow:var(--card-shadow);}
   .lb-row.is-me{border:1.5px solid var(--gold);background:var(--gold-dim);}
   .lb-avatar{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:11.5px;color:var(--ink);}
+  #blindBoxRevealBackdrop{opacity:0;pointer-events:none;transition:opacity .25s ease;}
+  #blindBoxRevealPopup{opacity:0;transform:translateY(-50%) scale(.9);pointer-events:none;transition:opacity .28s ease,transform .28s ease;}
+  #blindBoxRevealBackdrop.is-open{opacity:1;pointer-events:auto;}
+  #blindBoxRevealPopup.is-open{opacity:1;transform:translateY(-50%) scale(1);pointer-events:auto;}
+  @keyframes blindboxBurst{0%{transform:translate(0,0) scale(1);opacity:1;}100%{transform:translate(var(--tx),var(--ty)) scale(.3);opacity:0;}}
+  .blindbox-spark{position:absolute;font-size:13px;pointer-events:none;animation:blindboxBurst .7s ease-out forwards;z-index:2;}
+  @keyframes blindboxPop{0%{transform:scale(.6);}55%{transform:scale(1.18);}100%{transform:scale(1);}}
+  .blindbox-pop{animation:blindboxPop .38s cubic-bezier(.34,1.56,.64,1);}
+  @keyframes blindboxShake{0%,100%{transform:rotate(0);}20%{transform:rotate(-4deg);}40%{transform:rotate(4deg);}60%{transform:rotate(-3deg);}80%{transform:rotate(3deg);}}
+  .blindbox-card:not([data-revealed="1"]):hover .blindbox-icon{animation:blindboxShake .5s ease;}
+  @media (prefers-reduced-motion: reduce){
+    .blindbox-spark{animation:none;display:none;}
+    .blindbox-pop{animation:none;}
+    .blindbox-card:not([data-revealed="1"]):hover .blindbox-icon{animation:none;}
+  }
 
   .top{padding:28px 24px 6px;text-align:center;}
   .top .eyebrow{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-faint);}
@@ -360,23 +375,23 @@
       <div id="tierBackdrop" class="event-modal-backdrop"></div>
       <div id="tierModal" class="event-modal scroll-hide" style="max-height:82vh;overflow-y:auto;">
         <div id="tierClose" class="event-modal-close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></div>
-        <div style="padding:22px 20px 6px;display:flex;align-items:center;gap:9px;">
-          <div style="width:28px;height:28px;border-radius:8px;background:var(--gold-dim);display:flex;align-items:center;justify-content:center;color:var(--gold);flex-shrink:0;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 10h20"/></svg></div>
-          <div style="font-family:var(--font-display);font-size:17px;font-weight:700;">选择报名套餐</div>
+        <div style="padding:18px 20px 4px;display:flex;align-items:center;gap:9px;">
+          <div style="width:26px;height:26px;border-radius:8px;background:var(--gold-dim);display:flex;align-items:center;justify-content:center;color:var(--gold);flex-shrink:0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 10h20"/></svg></div>
+          <div style="font-family:var(--font-display);font-size:16px;font-weight:700;">选择报名套餐</div>
         </div>
-        <div style="padding:16px 20px 0;">
-          <div style="font-size:10.5px;color:var(--text-faint);margin-bottom:3px;">活动</div>
-          <div id="tierEventName" style="font-size:13.5px;font-weight:700;margin-bottom:16px;"></div>
-          <div style="font-size:10.5px;color:var(--text-faint);margin-bottom:8px;">可选套餐 &middot; 可混合选购多种套餐</div>
+        <div style="padding:11px 20px 0;">
+          <div style="font-size:10.5px;color:var(--text-faint);margin-bottom:2px;">活动</div>
+          <div id="tierEventName" style="font-size:13px;font-weight:700;margin-bottom:10px;"></div>
+          <div style="font-size:10.5px;color:var(--text-faint);margin-bottom:6px;">可选套餐 &middot; 可混合选购多种套餐</div>
           <div id="tierGrid"></div>
         </div>
-        <div style="margin:18px 20px 12px;background:var(--surface-hover);border-radius:14px;padding:14px 16px;">
-          <div style="font-size:11px;font-weight:700;color:var(--text-faint);margin-bottom:8px;">订单摘要</div>
+        <div style="margin:12px 20px 9px;background:var(--surface-hover);border-radius:14px;padding:11px 14px;">
+          <div style="font-size:11px;font-weight:700;color:var(--text-faint);margin-bottom:6px;">订单摘要</div>
           <div id="tierSummary"></div>
         </div>
-        <div style="margin:0 20px 16px;background:var(--gold-dim);border-radius:12px;padding:12px 14px;font-size:11px;line-height:1.6;color:var(--text-muted);">支付完成后将自动确认报名。请在新窗口完成支付，勿关闭本页面直至确认成功。</div>
-        <div style="padding:0 20px 20px;">
-          <div id="tierNextBtn" style="background:var(--gold);color:var(--ink);text-align:center;padding:13px;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;">下一步</div>
+        <div style="margin:0 20px 12px;background:var(--gold-dim);border-radius:12px;padding:9px 14px;font-size:11px;line-height:1.5;color:var(--text-muted);">支付完成后将自动确认报名。请在新窗口完成支付，勿关闭本页面直至确认成功。</div>
+        <div style="padding:0 20px 16px;">
+          <div id="tierNextBtn" style="background:var(--gold);color:var(--ink);text-align:center;padding:12px;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;">下一步</div>
         </div>
       </div>
 
@@ -413,26 +428,17 @@
         </div>
       </div>
 
-      <!-- lucky draw number modal, shared across all ticket purchases -->
-      <div id="blindBoxBackdrop" class="event-modal-backdrop"></div>
-      <div id="blindBoxModal" class="event-modal scroll-hide" style="max-height:82vh;overflow-y:auto;">
-        <div id="blindBoxClose" class="event-modal-close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></div>
-        <div style="padding:22px 20px 6px;text-align:center;">
-          <div style="font-family:var(--font-display);font-size:19px;font-weight:700;color:var(--gold);">&#127915; 门票详情</div>
-        </div>
-        <div id="ticketSummary" style="margin:14px 20px 0;background:var(--surface-hover);border-radius:14px;padding:14px 16px;"></div>
-        <div style="padding:16px 20px 4px;font-size:11.5px;font-weight:700;color:var(--text-faint);">配送进度</div>
-        <div id="deliveryTracker" style="padding:2px 20px 4px;"></div>
-        <div style="padding:16px 20px 4px;font-size:11.5px;font-weight:700;color:var(--text-faint);">抽奖号码</div>
-        <div id="blindBoxSubtitle" style="font-size:11px;color:var(--text-muted);padding:0 20px;margin-bottom:2px;"></div>
-        <div id="blindBoxGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:10px 20px 4px;"></div>
-        <div style="margin:4px 20px 16px;background:var(--gold-dim);border-radius:12px;padding:12px 14px;display:flex;gap:9px;align-items:flex-start;">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;"><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7c-1.5-3.5-5-4-6-2s1 3.5 6 2Z"/><path d="M12 7c1.5-3.5 5-4 6-2s-1 3.5-6 2Z"/></svg>
-          <div style="font-size:11.5px;line-height:1.6;color:var(--text-muted);">主办方将根据您的抽奖号码配送对应的盲盒，开奖结果与礼品将另行通知，请留意消息推送。</div>
-        </div>
-        <div style="padding:0 20px 20px;">
-          <div id="blindBoxDoneBtn" style="background:var(--gold);color:var(--ink);text-align:center;padding:12px;border-radius:12px;font-weight:700;font-size:13.5px;cursor:pointer;">完成</div>
-        </div>
+      <!-- blind box reveal popup: tapping a mystery box in tabBlindBoxDetail shows the roll + reveal
+           moment front and center, not tucked in a small grid tile. tabBlindBoxDetail itself lives
+           inside .phone-scroll (next to tabInvite), but this popup stays a direct child of
+           #screenDashboard on purpose, so it stays pinned to the visible viewport regardless of how
+           far the box grid is scrolled. -->
+      <div id="blindBoxRevealBackdrop" style="position:absolute;inset:0;z-index:25;background:color-mix(in srgb, var(--navy) 72%, transparent);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);"></div>
+      <div id="blindBoxRevealPopup" style="position:absolute;left:36px;right:36px;top:50%;z-index:26;background:var(--surface);border-radius:22px;padding:30px 24px 24px;text-align:center;box-shadow:0 30px 60px -20px oklch(0 0 0 / 0.6);">
+        <div id="blindBoxRevealIcon" style="font-size:56px;line-height:1;">🎁</div>
+        <div id="blindBoxRevealLabel" style="font-size:12px;color:var(--text-muted);margin-top:12px;font-weight:600;">揭晓中&hellip;</div>
+        <div id="blindBoxRevealNumber" style="font-family:var(--font-display);font-size:30px;font-weight:800;color:var(--gold);margin-top:8px;letter-spacing:.03em;min-height:38px;">&nbsp;</div>
+        <div id="blindBoxRevealOkBtn" style="display:none;margin-top:22px;background:var(--gold);color:var(--ink);font-weight:700;font-size:13.5px;padding:12px 0;border-radius:12px;cursor:pointer;">太棒了</div>
       </div>
 
       <!-- purchase history modal -->
@@ -1582,8 +1588,8 @@
             <div style="font-size:10px;color:var(--text-faint);margin-top:2px;">钻石</div>
           </div>
           <div class="profile-stat-card">
-            <div style="height:16px;"></div>
-            <div style="font-family:var(--font-display);font-size:16px;font-weight:600;margin-top:6px;"><span id="profilePointsValue">3,240</span><span style="font-size:10px;color:var(--gold);">pts</span></div>
+            <div style="font-size:10px;font-weight:700;color:var(--gold);height:16px;line-height:16px;">pts</div>
+            <div style="font-family:var(--font-display);font-size:16px;font-weight:600;margin-top:6px;"><span id="profilePointsValue">3,240</span></div>
             <div style="font-size:10px;color:var(--text-faint);margin-top:2px;">积分</div>
           </div>
           <div class="profile-stat-card">
@@ -1949,6 +1955,102 @@
         </div>
         <div style="margin:8px 18px 14px;font-size:12px;color:var(--desc-muted);line-height:1.5;">黄金市场动态、知识科普与官方公告，一次看完</div>
         <div id="newsListContainer" style="padding:0 0 20px;"></div>
+        <div style="height:110px;"></div>
+      </div>
+
+      <!-- 邀请有奖: referral code, share, stats, and invited-friends list -->
+      <div id="tabInvite" style="display:none;">
+        <div id="inviteBackRow" style="display:flex;align-items:center;gap:8px;padding:16px 18px 4px;cursor:pointer;color:var(--text-muted);font-size:12.5px;font-weight:600;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>返回</div>
+        <div style="padding:10px 18px 6px;display:flex;align-items:center;gap:9px;">
+          <div style="width:28px;height:28px;border-radius:8px;background:var(--gold-dim);display:flex;align-items:center;justify-content:center;color:var(--gold);flex-shrink:0;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <div style="font-family:var(--font-display);font-size:19px;font-weight:800;color:var(--text);">邀请有奖</div>
+        </div>
+        <div style="margin:8px 18px 0;font-size:12px;color:var(--desc-muted);line-height:1.5;">邀请好友加入 Gold Group，完成首笔交易后，双方各得 10 颗钻石</div>
+
+        <div style="margin:16px 18px 0;background:var(--gold-gradient);border-radius:18px;padding:22px 20px;text-align:center;box-shadow:var(--card-shadow);">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:6px;"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg>
+          <div style="font-family:var(--font-display);font-size:28px;font-weight:800;color:var(--ink);">+10<span style="font-size:18px;"> &#128142;</span></div>
+          <div style="font-size:11px;color:var(--ink);opacity:.7;margin-top:2px;">每成功邀请一位好友即可获得</div>
+        </div>
+
+        <div style="margin:16px 18px 0;background:var(--surface);border-radius:14px;padding:16px;box-shadow:var(--card-shadow);">
+          <div style="font-size:10.5px;color:var(--text-faint);">我的邀请码</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;gap:10px;">
+            <div id="inviteCode" style="font-family:var(--font-display);font-size:22px;font-weight:800;letter-spacing:.06em;color:var(--gold);">AMELIA88</div>
+            <div id="inviteCopyBtn" style="flex-shrink:0;background:var(--surface-hover);color:var(--text);font-weight:700;font-size:11.5px;padding:8px 14px;border-radius:9px;cursor:pointer;white-space:nowrap;">复制</div>
+          </div>
+          <div id="inviteShareBtn" style="margin-top:14px;background:var(--gold);color:var(--ink);text-align:center;padding:12px;border-radius:12px;font-weight:700;font-size:13.5px;cursor:pointer;">分享邀请链接</div>
+        </div>
+
+        <div style="display:flex;gap:10px;margin:16px 18px 0;">
+          <div style="flex:1;background:var(--surface);border-radius:14px;padding:14px;text-align:center;box-shadow:var(--card-shadow);">
+            <div style="font-family:var(--font-display);font-size:20px;font-weight:800;color:var(--text);">3</div>
+            <div style="font-size:10.5px;color:var(--text-faint);margin-top:2px;">已邀请好友</div>
+          </div>
+          <div style="flex:1;background:var(--surface);border-radius:14px;padding:14px;text-align:center;box-shadow:var(--card-shadow);">
+            <div style="font-family:var(--font-display);font-size:20px;font-weight:800;color:var(--gold);">30</div>
+            <div style="font-size:10.5px;color:var(--text-faint);margin-top:2px;">累计获得钻石</div>
+          </div>
+        </div>
+
+        <div style="padding:22px 18px 0;">
+          <div style="font-family:var(--font-display);font-size:14.5px;font-weight:700;margin-bottom:10px;">如何邀请</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;gap:10px;background:var(--surface);border-radius:12px;padding:12px 14px;box-shadow:var(--card-shadow);">
+              <div style="width:24px;height:24px;border-radius:50%;background:var(--gold-dim);color:var(--gold);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:800;font-size:12px;flex-shrink:0;">1</div>
+              <div style="font-size:12px;color:var(--text);">分享邀请码或邀请链接给好友</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;background:var(--surface);border-radius:12px;padding:12px 14px;box-shadow:var(--card-shadow);">
+              <div style="width:24px;height:24px;border-radius:50%;background:var(--gold-dim);color:var(--gold);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:800;font-size:12px;flex-shrink:0;">2</div>
+              <div style="font-size:12px;color:var(--text);">好友使用邀请码注册并完成首笔交易</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;background:var(--surface);border-radius:12px;padding:12px 14px;box-shadow:var(--card-shadow);">
+              <div style="width:24px;height:24px;border-radius:50%;background:var(--gold-dim);color:var(--gold);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:800;font-size:12px;flex-shrink:0;">3</div>
+              <div style="font-size:12px;color:var(--text);">系统自动为双方各发放 10 颗钻石</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding:22px 18px 0;">
+          <div style="font-family:var(--font-display);font-size:14.5px;font-weight:700;margin-bottom:10px;">我的邀请</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;gap:10px;background:var(--surface);border-radius:12px;padding:12px 14px;box-shadow:var(--card-shadow);">
+              <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(155deg,var(--blue),var(--blue-deep));display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:600;font-size:12px;color:var(--ink);flex-shrink:0;">KO</div>
+              <div style="flex:1;min-width:0;font-size:12.5px;font-weight:700;">Kevin Ong</div>
+              <div style="flex-shrink:0;font-size:10.5px;font-weight:700;color:var(--gold);">+10 &#128142;</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;background:var(--surface);border-radius:12px;padding:12px 14px;box-shadow:var(--card-shadow);">
+              <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(155deg,var(--blue),var(--blue-deep));display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:600;font-size:12px;color:var(--ink);flex-shrink:0;">SL</div>
+              <div style="flex:1;min-width:0;font-size:12.5px;font-weight:700;">Sarah Lim</div>
+              <div style="flex-shrink:0;font-size:10.5px;font-weight:700;color:var(--gold);">+10 &#128142;</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;background:var(--surface);border-radius:12px;padding:12px 14px;box-shadow:var(--card-shadow);opacity:.6;">
+              <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(155deg,var(--blue),var(--blue-deep));display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:600;font-size:12px;color:var(--ink);flex-shrink:0;">WJ</div>
+              <div style="flex:1;min-width:0;font-size:12.5px;font-weight:700;">Wei Jie</div>
+              <div style="flex-shrink:0;font-size:10.5px;font-weight:700;color:var(--text-faint);">待完成交易</div>
+            </div>
+          </div>
+        </div>
+        <div style="height:110px;"></div>
+      </div>
+
+      <!-- lucky draw number full screen (was a centered popup — switched to full screen since a
+           big multi-box order could outgrow a fixed-height modal), shared across all ticket purchases -->
+      <div id="tabBlindBoxDetail" style="display:none;">
+        <div id="blindBoxDetailBackRow" style="display:flex;align-items:center;gap:8px;padding:16px 18px 4px;cursor:pointer;color:var(--text-muted);font-size:12.5px;font-weight:600;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>返回</div>
+        <div style="padding:10px 20px 6px;text-align:center;">
+          <div style="font-family:var(--font-display);font-size:19px;font-weight:700;color:var(--gold);">&#127915; 购买详情</div>
+        </div>
+        <div id="ticketSummary" style="margin:14px 20px 0;background:var(--surface-hover);border-radius:14px;padding:14px 16px;"></div>
+        <div style="padding:16px 20px 4px;font-size:11.5px;font-weight:700;color:var(--text-faint);">配送进度</div>
+        <div id="deliveryTracker" style="padding:2px 20px 4px;"></div>
+        <div style="padding:16px 20px 4px;font-size:11.5px;font-weight:700;color:var(--text-faint);">抽奖号码</div>
+        <div id="blindBoxSubtitle" style="font-size:11px;color:var(--text-muted);padding:0 20px;margin-bottom:2px;"></div>
+        <div id="blindBoxGrid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:10px 20px 4px;"></div>
+        <div style="margin:4px 20px 16px;background:var(--gold-dim);border-radius:12px;padding:12px 14px;display:flex;gap:9px;align-items:flex-start;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;"><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7c-1.5-3.5-5-4-6-2s1 3.5 6 2Z"/><path d="M12 7c1.5-3.5 5-4 6-2s-1 3.5-6 2Z"/></svg>
+          <div style="font-size:11.5px;line-height:1.6;color:var(--text-muted);">主办方将根据您的抽奖号码配送对应的盲盒，开奖结果与礼品将另行通知，请留意消息推送。</div>
+        </div>
         <div style="height:110px;"></div>
       </div>
 
@@ -2439,7 +2541,7 @@
         <div id="menuLeaderboardRow" class="menu-row"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>排行榜</div>
         <div id="menuEventsRow" class="menu-row"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="16" rx="2.5"/><path d="M3.5 10h17"/><path d="M8 3v4"/><path d="M16 3v4"/></svg>活动与推广<span class="badge">2</span></div>
         <div id="menuNewsRow" class="menu-row"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>资讯 &amp; 新闻</div>
-        <div class="menu-row"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>邀请有奖</div>
+        <div id="menuInviteRow" class="menu-row"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>邀请有奖</div>
         <div class="menu-divider"></div>
         <div class="settings-row" style="cursor:default;">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
@@ -2504,13 +2606,13 @@
             </div>
           </div>
           <div id="buyBtn1" style="background:var(--gold);color:var(--ink);text-align:center;padding:12px;border-radius:12px;font-weight:700;font-size:13.5px;cursor:pointer;">选择套餐并购买</div>
-          <div id="pastTicketLink1" style="display:none;text-align:center;margin-top:10px;font-size:11.5px;color:#FFC933;font-weight:600;cursor:pointer;">&#127915; 查看已购门票详情</div>
+          <div id="pastTicketLink1" style="display:none;text-align:center;margin-top:10px;font-size:11.5px;color:#FFC933;font-weight:600;cursor:pointer;">&#127915; 查看购买详情</div>
         </div>
         <div id="buySuccess1" style="display:none;text-align:center;">
           <div style="color:#FFC933;font-weight:700;font-size:13px;margin-bottom:3px;">&#10003; 购买成功</div>
           <div class="buy-success-detail" style="font-size:11px;color:#fff;opacity:.75;line-height:1.4;margin-bottom:10px;"></div>
           <div style="display:flex;gap:8px;">
-            <div id="openBlindBoxBtn1" style="flex:1;background:var(--gold-gradient);color:var(--ink);text-align:center;padding:11px 6px;border-radius:11px;font-weight:700;font-size:12px;cursor:pointer;">&#127915; 门票详情</div>
+            <div id="openBlindBoxBtn1" style="flex:1;background:var(--gold-gradient);color:var(--ink);text-align:center;padding:11px 6px;border-radius:11px;font-weight:700;font-size:12px;cursor:pointer;">&#127915; 购买详情</div>
             <div id="buyAgainBtn1" style="flex:1;background:oklch(1 0 0 / .1);color:#fff;text-align:center;padding:11px 6px;border-radius:11px;font-weight:700;font-size:12px;cursor:pointer;">再次购买</div>
           </div>
         </div>
@@ -2536,13 +2638,13 @@
             </div>
           </div>
           <div id="buyBtn3" style="background:var(--gold);color:var(--ink);text-align:center;padding:12px;border-radius:12px;font-weight:700;font-size:13.5px;cursor:pointer;">选择套餐并购买</div>
-          <div id="pastTicketLink3" style="display:none;text-align:center;margin-top:10px;font-size:11.5px;color:#FFC933;font-weight:600;cursor:pointer;">&#127915; 查看已购门票详情</div>
+          <div id="pastTicketLink3" style="display:none;text-align:center;margin-top:10px;font-size:11.5px;color:#FFC933;font-weight:600;cursor:pointer;">&#127915; 查看购买详情</div>
         </div>
         <div id="buySuccess3" style="display:none;text-align:center;">
           <div style="color:#FFC933;font-weight:700;font-size:13px;margin-bottom:3px;">&#10003; 购买成功</div>
           <div class="buy-success-detail" style="font-size:11px;color:#fff;opacity:.75;line-height:1.4;margin-bottom:10px;"></div>
           <div style="display:flex;gap:8px;">
-            <div id="openBlindBoxBtn3" style="flex:1;background:var(--gold-gradient);color:var(--ink);text-align:center;padding:11px 6px;border-radius:11px;font-weight:700;font-size:12px;cursor:pointer;">&#127915; 门票详情</div>
+            <div id="openBlindBoxBtn3" style="flex:1;background:var(--gold-gradient);color:var(--ink);text-align:center;padding:11px 6px;border-radius:11px;font-weight:700;font-size:12px;cursor:pointer;">&#127915; 购买详情</div>
             <div id="buyAgainBtn3" style="flex:1;background:oklch(1 0 0 / .1);color:#fff;text-align:center;padding:11px 6px;border-radius:11px;font-weight:700;font-size:12px;cursor:pointer;">再次购买</div>
           </div>
         </div>
@@ -2557,13 +2659,13 @@
             </div>
           </div>
           <div id="buyBtn4" style="background:var(--gold);color:var(--ink);text-align:center;padding:12px;border-radius:12px;font-weight:700;font-size:13.5px;cursor:pointer;">选择套餐并购买</div>
-          <div id="pastTicketLink4" style="display:none;text-align:center;margin-top:10px;font-size:11.5px;color:#FFC933;font-weight:600;cursor:pointer;">&#127915; 查看已购门票详情</div>
+          <div id="pastTicketLink4" style="display:none;text-align:center;margin-top:10px;font-size:11.5px;color:#FFC933;font-weight:600;cursor:pointer;">&#127915; 查看购买详情</div>
         </div>
         <div id="buySuccess4" style="display:none;text-align:center;">
           <div style="color:#FFC933;font-weight:700;font-size:13px;margin-bottom:3px;">&#10003; 购买成功</div>
           <div class="buy-success-detail" style="font-size:11px;color:#fff;opacity:.75;line-height:1.4;margin-bottom:10px;"></div>
           <div style="display:flex;gap:8px;">
-            <div id="openBlindBoxBtn4" style="flex:1;background:var(--gold-gradient);color:var(--ink);text-align:center;padding:11px 6px;border-radius:11px;font-weight:700;font-size:12px;cursor:pointer;">&#127915; 门票详情</div>
+            <div id="openBlindBoxBtn4" style="flex:1;background:var(--gold-gradient);color:var(--ink);text-align:center;padding:11px 6px;border-radius:11px;font-weight:700;font-size:12px;cursor:pointer;">&#127915; 购买详情</div>
             <div id="buyAgainBtn4" style="flex:1;background:oklch(1 0 0 / .1);color:#fff;text-align:center;padding:11px 6px;border-radius:11px;font-weight:700;font-size:12px;cursor:pointer;">再次购买</div>
           </div>
         </div>
@@ -2578,13 +2680,13 @@
             </div>
           </div>
           <div id="buyBtn5" style="background:var(--gold);color:var(--ink);text-align:center;padding:12px;border-radius:12px;font-weight:700;font-size:13.5px;cursor:pointer;">选择套餐并购买</div>
-          <div id="pastTicketLink5" style="display:none;text-align:center;margin-top:10px;font-size:11.5px;color:#FFC933;font-weight:600;cursor:pointer;">&#127915; 查看已购门票详情</div>
+          <div id="pastTicketLink5" style="display:none;text-align:center;margin-top:10px;font-size:11.5px;color:#FFC933;font-weight:600;cursor:pointer;">&#127915; 查看购买详情</div>
         </div>
         <div id="buySuccess5" style="display:none;text-align:center;">
           <div style="color:#FFC933;font-weight:700;font-size:13px;margin-bottom:3px;">&#10003; 购买成功</div>
           <div class="buy-success-detail" style="font-size:11px;color:#fff;opacity:.75;line-height:1.4;margin-bottom:10px;"></div>
           <div style="display:flex;gap:8px;">
-            <div id="openBlindBoxBtn5" style="flex:1;background:var(--gold-gradient);color:var(--ink);text-align:center;padding:11px 6px;border-radius:11px;font-weight:700;font-size:12px;cursor:pointer;">&#127915; 门票详情</div>
+            <div id="openBlindBoxBtn5" style="flex:1;background:var(--gold-gradient);color:var(--ink);text-align:center;padding:11px 6px;border-radius:11px;font-weight:700;font-size:12px;cursor:pointer;">&#127915; 购买详情</div>
             <div id="buyAgainBtn5" style="flex:1;background:oklch(1 0 0 / .1);color:#fff;text-align:center;padding:11px 6px;border-radius:11px;font-weight:700;font-size:12px;cursor:pointer;">再次购买</div>
           </div>
         </div>
@@ -2909,7 +3011,7 @@
 
   // event ticket purchase: package selection + payment confirmation + buy action
   function genLuckyNumber(){
-    return 'GG26-' + Math.floor(10000 + Math.random() * 90000);
+    return 'GG26-' + Math.floor(100 + Math.random() * 900); // 3 digits only, 100-999
   }
   var currentLang = 'zh';
   function T(zh, en){ return currentLang !== 'zh' ? en : zh; }
@@ -2934,9 +3036,9 @@
       { label: { zh: '携伴价', en: 'Plus One' }, price: 68, desc: { zh: '2人入场 + 茶点', en: 'Entry for 2 + refreshments' } }
     ],
     5: [
-      { label: { zh: '1个盲盒', en: '1 Box' }, price: 100, desc: { zh: '包含1份学生艺术作品 + 1份惊喜礼物', en: 'Includes 1 student artwork + 1 surprise gift' } },
-      { label: { zh: '2个盲盒', en: '2 Boxes' }, price: 180, save: 20, desc: { zh: '包含2份学生艺术作品 + 2份惊喜礼物', en: 'Includes 2 student artworks + 2 surprise gifts' } },
-      { label: { zh: '5个盲盒', en: '5 Boxes' }, price: 400, save: 100, popular: true, desc: { zh: '包含5份学生艺术作品 + 5份惊喜礼物', en: 'Includes 5 student artworks + 5 surprise gifts' } }
+      { label: { zh: '1个盲盒', en: '1 Box' }, price: 100, boxes: 1, desc: { zh: '包含1份学生艺术作品 + 1份惊喜礼物', en: 'Includes 1 student artwork + 1 surprise gift' } },
+      { label: { zh: '2个盲盒', en: '2 Boxes' }, price: 180, save: 20, boxes: 2, desc: { zh: '包含2份学生艺术作品 + 2份惊喜礼物', en: 'Includes 2 student artworks + 2 surprise gifts' } },
+      { label: { zh: '5个盲盒', en: '5 Boxes' }, price: 400, save: 100, popular: true, boxes: 5, desc: { zh: '包含5份学生艺术作品 + 5份惊喜礼物', en: 'Includes 5 student artworks + 5 surprise gifts' } }
     ]
   };
   var lastOrders = {};
@@ -2960,7 +3062,7 @@
       var qty = currentTierQtys[i] || 0;
       if (qty > 0) {
         total += tier.price * qty;
-        count += qty;
+        count += qty * (tier.boxes || 1); // a tier can itself bundle multiple boxes (e.g. "5 Boxes" x1 = 5, not 1)
         lines += '<div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-muted);margin-bottom:6px;"><span>' + tier.label[currentLang] + ' x' + qty + '</span><span style="color:var(--text);font-weight:600;">RM ' + (tier.price * qty) + '</span></div>';
       }
     });
@@ -2982,7 +3084,7 @@
     tierGrid.innerHTML = '';
     tiers.forEach(function(tier, idx){
       var row = document.createElement('div');
-      row.style.cssText = 'position:relative;display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:12px;padding:12px 14px;margin-bottom:8px;transition:background .15s ease;';
+      row.style.cssText = 'position:relative;display:flex;align-items:center;gap:10px;background:var(--surface);border-radius:12px;padding:9px 12px;margin-bottom:6px;transition:background .15s ease;';
       if (tier.popular) {
         var popularBadge = document.createElement('div');
         popularBadge.style.cssText = 'position:absolute;top:-9px;right:12px;background:var(--gold);color:var(--ink);font-size:9px;font-weight:800;padding:2.5px 9px;border-radius:999px;letter-spacing:.02em;';
@@ -2995,7 +3097,7 @@
       labelEl.style.cssText = 'font-size:12.5px;font-weight:700;';
       labelEl.textContent = tier.label[currentLang];
       var priceRow = document.createElement('div');
-      priceRow.style.cssText = 'display:flex;align-items:baseline;gap:7px;margin:2px 0;';
+      priceRow.style.cssText = 'display:flex;align-items:baseline;gap:7px;margin:1px 0;';
       var priceEl = document.createElement('div');
       priceEl.style.cssText = 'font-family:var(--font-display);font-size:14px;font-weight:600;color:var(--gold);';
       priceEl.textContent = 'RM ' + tier.price;
@@ -3015,13 +3117,13 @@
       var stepper = document.createElement('div');
       stepper.style.cssText = 'display:flex;align-items:center;gap:8px;flex-shrink:0;';
       var minus = document.createElement('div');
-      minus.style.cssText = 'width:26px;height:26px;border-radius:8px;background:var(--surface-hover);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;cursor:pointer;';
+      minus.style.cssText = 'width:24px;height:24px;border-radius:8px;background:var(--surface-hover);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;cursor:pointer;';
       minus.textContent = '−';
       var valueEl = document.createElement('div');
       valueEl.style.cssText = 'min-width:14px;text-align:center;font-size:13px;font-weight:700;';
       valueEl.textContent = '0';
       var plus = document.createElement('div');
-      plus.style.cssText = 'width:26px;height:26px;border-radius:8px;background:var(--surface-hover);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;cursor:pointer;';
+      plus.style.cssText = 'width:24px;height:24px;border-radius:8px;background:var(--surface-hover);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;cursor:pointer;';
       plus.textContent = '+';
       plus.className = 'tier-plus-btn';
       plus.dataset.tierIdx = String(idx);
@@ -3309,7 +3411,7 @@
         if (qty > 0) {
           lines.push({ label: tier.label, price: tier.price, desc: tier.desc, qty: qty });
           total += tier.price * qty;
-          count += qty;
+          count += qty * (tier.boxes || 1); // a tier can itself bundle multiple boxes (e.g. "5 Boxes" x1 = 5, not 1)
         }
       });
       if (count === 0) return;
@@ -3343,8 +3445,6 @@
   });
 
   // ticket details: order summary + lucky draw numbers (view-only, blind box delivered later)
-  var blindBoxBackdrop = document.getElementById('blindBoxBackdrop');
-  var blindBoxModal = document.getElementById('blindBoxModal');
   var blindBoxGrid = document.getElementById('blindBoxGrid');
   var blindBoxSubtitle = document.getElementById('blindBoxSubtitle');
   var ticketSummary = document.getElementById('ticketSummary');
@@ -3355,9 +3455,9 @@
     if (!trackerEl) return;
     var currentIdx = (order && order.status === 'pending') ? 1 : 0;
     var stages = [
-      { zh: '订单确认', en: 'Order Confirmed', descZh: '支付成功，订单已生成', descEn: 'Payment received, order created' },
-      { zh: '配对与配送中', en: 'Matching & Delivery', descZh: '主办方正在配对盲盒并安排配送', descEn: 'The organizer is matching your box and arranging delivery' },
-      { zh: '已送达', en: 'Delivered', descZh: '', descEn: '' }
+      { zh: '订单确认', en: 'Order Confirmed' },
+      { zh: '配对与配送中', en: 'Matching & Delivery' },
+      { zh: '已送达', en: 'Delivered' }
     ];
     // dots + connecting lines row
     var dotsHtml = '<div style="display:flex;align-items:center;">';
@@ -3384,8 +3484,84 @@
     labelsHtml += '</div>';
     trackerEl.innerHTML = dotsHtml + labelsHtml;
   }
+  // tiny sparkle burst around a just-revealed blind box card, purely decorative
+  function spawnBlindBoxSparks(card){
+    var emojis = ['✨', '🎉', '⭐', '💫', '✨', '🎊'];
+    for (var i = 0; i < emojis.length; i++) {
+      var s = document.createElement('span');
+      s.className = 'blindbox-spark';
+      s.textContent = emojis[i];
+      var angle = (Math.PI * 2 * i) / emojis.length + (Math.random() * 0.4 - 0.2);
+      var dist = 30 + Math.random() * 16;
+      s.style.left = '50%';
+      s.style.top = '28%';
+      s.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
+      s.style.setProperty('--ty', Math.sin(angle) * dist + 'px');
+      card.appendChild(s);
+      (function(el){ setTimeout(function(){ el.remove(); }, 750); })(s);
+    }
+  }
+  // reveal popup: tapping a mystery box opens this (stacked above tabBlindBoxDetail) so the
+  // slot-machine roll + landing number is the focus, not a small tile in a 2-col grid
+  var blindBoxRevealBackdrop = document.getElementById('blindBoxRevealBackdrop');
+  var blindBoxRevealPopup = document.getElementById('blindBoxRevealPopup');
+  var blindBoxRevealIcon = document.getElementById('blindBoxRevealIcon');
+  var blindBoxRevealLabel = document.getElementById('blindBoxRevealLabel');
+  var blindBoxRevealNumber = document.getElementById('blindBoxRevealNumber');
+  var blindBoxRevealOkBtn = document.getElementById('blindBoxRevealOkBtn');
+  var pendingRevealCard = null; // the grid tile to mark "revealed" once the popup is dismissed
+  function closeBlindBoxReveal(){
+    if (blindBoxRevealBackdrop) blindBoxRevealBackdrop.classList.remove('is-open');
+    if (blindBoxRevealPopup) blindBoxRevealPopup.classList.remove('is-open');
+    if (pendingRevealCard) {
+      var num = pendingRevealCard.getAttribute('data-num');
+      var icon = pendingRevealCard.querySelector('.blindbox-icon');
+      var numEl = pendingRevealCard.querySelector('.blindbox-numline');
+      var statusEl = pendingRevealCard.querySelector('.blindbox-status');
+      if (icon) icon.textContent = '🎟️';
+      if (numEl) numEl.textContent = num;
+      if (statusEl) statusEl.textContent = T('待配送盲盒', 'Blind box pending delivery');
+      pendingRevealCard = null;
+    }
+  }
+  if (blindBoxRevealOkBtn) blindBoxRevealOkBtn.addEventListener('click', closeBlindBoxReveal);
+  if (blindBoxRevealBackdrop) blindBoxRevealBackdrop.addEventListener('click', closeBlindBoxReveal);
+  // slot-machine style reveal: the number rolls through a few random 3-digit picks before
+  // landing on the real one, then pops with a little sparkle burst — all inside the popup
+  function revealBlindBoxCard(card, realNum){
+    if (card.getAttribute('data-revealed') === '1') return;
+    card.setAttribute('data-revealed', '1');
+    card.setAttribute('data-num', realNum);
+    card.style.cursor = 'default';
+    pendingRevealCard = card;
+    if (blindBoxRevealIcon) blindBoxRevealIcon.textContent = '🎁';
+    if (blindBoxRevealLabel) blindBoxRevealLabel.textContent = T('揭晓中…', 'Revealing…');
+    if (blindBoxRevealNumber) { blindBoxRevealNumber.textContent = ' '; blindBoxRevealNumber.classList.remove('blindbox-pop'); }
+    if (blindBoxRevealOkBtn) blindBoxRevealOkBtn.style.display = 'none';
+    if (blindBoxRevealBackdrop) blindBoxRevealBackdrop.classList.add('is-open');
+    if (blindBoxRevealPopup) blindBoxRevealPopup.classList.add('is-open');
+    var ticks = 0, maxTicks = 14;
+    var rollTimer = setInterval(function(){
+      ticks++;
+      if (blindBoxRevealNumber) blindBoxRevealNumber.textContent = genLuckyNumber();
+      if (ticks >= maxTicks) {
+        clearInterval(rollTimer);
+        if (blindBoxRevealIcon) blindBoxRevealIcon.textContent = '🎟️';
+        if (blindBoxRevealLabel) blindBoxRevealLabel.textContent = T('您的抽奖号码', 'Your lucky draw number');
+        if (blindBoxRevealNumber) {
+          blindBoxRevealNumber.textContent = realNum;
+          void blindBoxRevealNumber.offsetWidth;
+          blindBoxRevealNumber.classList.add('blindbox-pop');
+        }
+        if (blindBoxRevealOkBtn) blindBoxRevealOkBtn.style.display = 'block';
+        if (blindBoxRevealPopup) spawnBlindBoxSparks(blindBoxRevealPopup);
+      }
+    }, 45);
+  }
+  var currentBlindBoxEventId = null; // which event's detail screen to return to on close/back
   function openBlindBoxModal(order){
     if (!blindBoxGrid) return;
+    currentBlindBoxEventId = order.eventId;
     renderDeliveryTracker(order);
     if (ticketSummary) {
       var t = order.time;
@@ -3402,28 +3578,33 @@
     blindBoxGrid.innerHTML = '';
     order.numbers.forEach(function(num){
       var card = document.createElement('div');
-      card.style.cssText = 'background:var(--surface-hover);border-radius:14px;padding:18px 10px;text-align:center;';
+      card.className = 'blindbox-card';
+      card.setAttribute('data-revealed', '0');
+      card.style.cssText = 'background:var(--surface-hover);border-radius:12px;padding:12px 4px;text-align:center;position:relative;overflow:visible;cursor:pointer;transition:transform .12s ease;';
       var icon = document.createElement('div');
-      icon.style.cssText = 'font-size:26px;line-height:1;';
-      icon.textContent = '🎟️';
+      icon.className = 'blindbox-icon';
+      icon.style.cssText = 'font-size:19px;line-height:1;';
+      icon.textContent = '🎁';
       var numEl = document.createElement('div');
-      numEl.style.cssText = 'font-size:12px;font-weight:700;color:var(--gold);margin-top:9px;letter-spacing:.02em;';
-      numEl.textContent = num;
+      numEl.className = 'blindbox-numline';
+      numEl.style.cssText = 'font-size:13px;font-weight:700;color:var(--gold);margin-top:6px;letter-spacing:.01em;font-family:var(--font-display);white-space:nowrap;';
+      numEl.textContent = T('点击揭晓', 'Tap');
       var statusEl = document.createElement('div');
-      statusEl.style.cssText = 'font-size:10px;color:var(--text-faint);margin-top:3px;';
-      statusEl.textContent = T('待配送盲盒', 'Blind box pending delivery');
+      statusEl.className = 'blindbox-status';
+      statusEl.style.cssText = 'font-size:8.5px;color:var(--text-faint);margin-top:2px;';
+      statusEl.textContent = T('神秘号码', 'Mystery');
       card.appendChild(icon);
       card.appendChild(numEl);
       card.appendChild(statusEl);
+      card.addEventListener('click', function(){ revealBlindBoxCard(card, num); });
       blindBoxGrid.appendChild(card);
     });
-    if (blindBoxSubtitle) blindBoxSubtitle.textContent = T('您共有 ' + order.numbers.length + ' 个抽奖号码', 'You have ' + order.numbers.length + ' lucky draw number(s)');
-    if (blindBoxBackdrop) blindBoxBackdrop.classList.add('is-open');
-    if (blindBoxModal) blindBoxModal.classList.add('is-open');
+    if (blindBoxSubtitle) blindBoxSubtitle.textContent = T('您共有 ' + order.numbers.length + ' 个抽奖号码 · 点击卡片逐一揭晓', 'You have ' + order.numbers.length + ' lucky draw number(s) · tap each card to reveal');
+    if (typeof showTab === 'function') showTab('blindBoxDetail');
+    if (phoneScroll) phoneScroll.scrollTop = 0;
   }
   function closeBlindBoxModal(){
-    if (blindBoxBackdrop) blindBoxBackdrop.classList.remove('is-open');
-    if (blindBoxModal) blindBoxModal.classList.remove('is-open');
+    if (typeof showTab === 'function') showTab(currentBlindBoxEventId ? 'detail' + currentBlindBoxEventId : 'events');
   }
   [1, 3, 4, 5].forEach(function(id){
     var blindBtn = document.getElementById('openBlindBoxBtn' + id);
@@ -3433,9 +3614,8 @@
       if (order) openBlindBoxModal(order);
     });
   });
-  [document.getElementById('blindBoxClose'), blindBoxBackdrop, document.getElementById('blindBoxDoneBtn')].forEach(function(el){
-    if (el) el.addEventListener('click', closeBlindBoxModal);
-  });
+  var blindBoxDetailBackRow = document.getElementById('blindBoxDetailBackRow');
+  if (blindBoxDetailBackRow) blindBoxDetailBackRow.addEventListener('click', closeBlindBoxModal);
 
   // purchase history: lists every completed order, tap one to view its ticket details
   var historyBackdrop = document.getElementById('historyBackdrop');
@@ -4593,6 +4773,51 @@
     var newsListBackRow = document.getElementById('newsListBackRow');
     if (newsListBackRow) newsListBackRow.addEventListener('click', function(){ showTab('home'); });
 
+    // 邀请有奖 (invite & earn): copy code, share link, both just clipboard-side in this mockup
+    var inviteBackRow = document.getElementById('inviteBackRow');
+    if (inviteBackRow) inviteBackRow.addEventListener('click', function(){ showTab('home'); });
+    var inviteCodeEl = document.getElementById('inviteCode');
+    var inviteCopyBtn = document.getElementById('inviteCopyBtn');
+    if (inviteCopyBtn) {
+      var copyBtnDefaultText = inviteCopyBtn.textContent;
+      inviteCopyBtn.addEventListener('click', function(){
+        var code = inviteCodeEl ? inviteCodeEl.textContent : '';
+        function flashCopied(){
+          inviteCopyBtn.textContent = T('已复制 ✓', 'Copied ✓');
+          setTimeout(function(){ inviteCopyBtn.textContent = copyBtnDefaultText; }, 1500);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(code).then(flashCopied).catch(flashCopied);
+        } else {
+          flashCopied();
+        }
+      });
+    }
+    var inviteShareBtn = document.getElementById('inviteShareBtn');
+    if (inviteShareBtn) {
+      var shareBtnDefaultText = inviteShareBtn.textContent;
+      inviteShareBtn.addEventListener('click', function(){
+        var code = inviteCodeEl ? inviteCodeEl.textContent : '';
+        var shareText = T(
+          '用我的邀请码 ' + code + ' 加入 Gold Group，完成首笔交易后我们各得 10 颗钻石！',
+          'Join Gold Group with my invite code ' + code + ' — we both get 10 diamonds after your first trade!'
+        );
+        if (navigator.share) {
+          navigator.share({ title: 'Gold Group', text: shareText }).catch(function(){});
+          return;
+        }
+        function flashShared(){
+          inviteShareBtn.textContent = T('邀请文案已复制 ✓', 'Invite message copied ✓');
+          setTimeout(function(){ inviteShareBtn.textContent = shareBtnDefaultText; }, 1500);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(shareText).then(flashShared).catch(flashShared);
+        } else {
+          flashShared();
+        }
+      });
+    }
+
     if (Math.random() > SHOW_CHANCE) return; // most visits: no news card, simulating "random" appearance
 
     var item = null;
@@ -5226,8 +5451,8 @@
   };
   // these three carry an emoji/checkmark decoded from a numeric HTML entity (&#127915; / &#10003;)
   // with no variation selector, so the dictionary keys are built with exact \u escapes to match
-  zhToEn['\u{1F39F} 门票详情'] = '\u{1F39F} Ticket Details';
-  zhToEn['\u{1F39F} 查看已购门票详情'] = '\u{1F39F} View Purchased Ticket';
+  zhToEn['\u{1F39F} 购买详情'] = '\u{1F39F} Purchase Details';
+  zhToEn['\u{1F39F} 查看购买详情'] = '\u{1F39F} View Purchase Details';
   zhToEn['✓ 购买成功'] = '✓ Purchase Successful';
   zhToEn['已成功报名'] = 'Registered Successfully';
   zhToEn['9月13日'] = 'Sep 13';
@@ -5513,6 +5738,20 @@
   // 资讯 & 新闻 (news list page)
   zhToEn['资讯 & 新闻'] = 'News & Updates';
   zhToEn['黄金市场动态、知识科普与官方公告，一次看完'] = 'Market moves, gold 101, and official announcements — all in one place';
+  // 邀请有奖 (invite & earn)
+  zhToEn['邀请好友加入 Gold Group，完成首笔交易后，双方各得 10 颗钻石'] = 'Invite friends to Gold Group — once they complete their first trade, you both get 10 diamonds';
+  zhToEn['每成功邀请一位好友即可获得'] = 'Earned for every friend you successfully invite';
+  zhToEn['我的邀请码'] = 'My Invite Code';
+  zhToEn['复制'] = 'Copy';
+  zhToEn['分享邀请链接'] = 'Share Invite Link';
+  zhToEn['已邀请好友'] = 'Friends Invited';
+  zhToEn['累计获得钻石'] = 'Diamonds Earned';
+  zhToEn['如何邀请'] = 'How It Works';
+  zhToEn['分享邀请码或邀请链接给好友'] = 'Share your invite code or link with a friend';
+  zhToEn['好友使用邀请码注册并完成首笔交易'] = 'They sign up with your code and complete their first trade';
+  zhToEn['系统自动为双方各发放 10 颗钻石'] = 'You both automatically receive 10 diamonds';
+  zhToEn['我的邀请'] = 'My Invites';
+  zhToEn['待完成交易'] = 'Trade Pending';
   zhToEn['约1分钟'] = 'About 1 min';
   zhToEn['生肖八字：年度运势'] = 'Zodiac & BaZi: Annual Fortune';
   zhToEn['输入你的生肖与出生日期，为你计算专属的黄金年度运势'] = 'Enter your zodiac sign and birth date for your personal annual gold fortune';
@@ -5636,7 +5875,7 @@
       btn.addEventListener('click', toggleMenu);
     });
     backdrop.addEventListener('click', closeMenu);
-    panel.querySelectorAll('.menu-row:not(.logout):not(#menuLeaderboardRow):not(#menuEventsRow):not(#menuNewsRow)').forEach(function(row){
+    panel.querySelectorAll('.menu-row:not(.logout):not(#menuLeaderboardRow):not(#menuEventsRow):not(#menuNewsRow):not(#menuInviteRow)').forEach(function(row){
       row.addEventListener('click', function(){
         closeMenu();
         requireLogin();
@@ -5659,6 +5898,12 @@
       closeMenu();
       if (requireLogin()) return;
       showTab('newsList');
+    });
+    var menuInviteRow = document.getElementById('menuInviteRow');
+    if (menuInviteRow) menuInviteRow.addEventListener('click', function(){
+      closeMenu();
+      if (requireLogin()) return;
+      showTab('invite');
     });
 
     // swipe gesture: drag from the left edge to open the side menu, drag left to close it
@@ -6055,6 +6300,8 @@
   var tabAwards = document.getElementById('tabAwards');
   var tabLeaderboard = document.getElementById('tabLeaderboard');
   var tabNewsList = document.getElementById('tabNewsList');
+  var tabInvite = document.getElementById('tabInvite');
+  var tabBlindBoxDetail = document.getElementById('tabBlindBoxDetail');
   var tabArchive = document.getElementById('tabArchive');
   var tabPuzzle = document.getElementById('tabPuzzle');
   var tabQuiz = document.getElementById('tabQuiz');
@@ -6095,6 +6342,8 @@
       setScreen(tabAwards, name === 'awards');
       setScreen(tabLeaderboard, name === 'leaderboard');
       setScreen(tabNewsList, name === 'newsList');
+      setScreen(tabInvite, name === 'invite');
+      setScreen(tabBlindBoxDetail, name === 'blindBoxDetail');
       setScreen(tabArchive, name === 'archive');
       setScreen(tabPuzzle, name === 'puzzle');
       setScreen(tabQuiz, name === 'quiz');
