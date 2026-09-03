@@ -3834,31 +3834,35 @@
     }
 
     function renderPodium(list){
-      var order = [list[1], list[0], list[2]]; // 2nd, 1st, 3rd — center-tall layout
-      var barHeights = [58, 78, 42];
-      var barColors = [
+      // flat medal-badge style: no bars/steps — a ring around each avatar plus a small rank
+      // badge in the corner, #1 slightly larger with a crown floated above (absolute, so it
+      // never affects row height). Row aligns on the avatar+badge box, which is a fixed size
+      // per rank — the only thing that varies is that fixed size, so nothing can drift.
+      var order = [list[1], list[0], list[2]]; // 2nd, 1st, 3rd — centered, #1 slightly bigger
+      var ranks = [2, 1, 3];
+      var boxSizes = [56, 68, 56];
+      var ringColors = ['#B8C0CC', 'var(--gold)', '#C97B4A'];
+      var badgeColors = [
         'linear-gradient(155deg,#E7EAF0,#9AA3B2)',
         'linear-gradient(155deg,#F6DE9C,#B8862E)',
         'linear-gradient(155deg,#E7B48B,#A5623A)'
       ];
-      var ranks = [2, 1, 3];
-      // avatars are the same size and sit on an identical-height crown slot for all three
-      // columns, so the people row always lines up pixel-for-pixel — only the step below varies
-      var peopleHtml = '', stepsHtml = '';
+      var html = '';
       for (var i = 0; i < 3; i++) {
         var p = order[i];
         if (!p) continue;
-        peopleHtml += '<div style="flex:1;max-width:104px;text-align:center;">' +
-          '<div style="height:20px;display:flex;align-items:flex-end;justify-content:center;">' + (ranks[i] === 1 ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="var(--gold)" stroke="none"><path d="M3 6l4 3 5-6 5 6 4-3-2 12H5L3 6Z"/></svg>' : '') + '</div>' +
-          avatarHtml(p, 52) +
-          '<div style="font-size:11px;font-weight:700;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + p.name + '</div>' +
+        var box = boxSizes[i];
+        html += '<div style="flex:1;max-width:100px;text-align:center;">' +
+          '<div style="position:relative;width:' + box + 'px;height:' + box + 'px;margin:0 auto;">' +
+            (ranks[i] === 1 ? '<svg width="22" height="22" viewBox="0 0 24 24" fill="var(--gold)" stroke="none" style="position:absolute;top:-16px;left:50%;transform:translateX(-50%);"><path d="M3 6l4 3 5-6 5 6 4-3-2 12H5L3 6Z"/></svg>' : '') +
+            '<div class="lb-avatar" style="width:100%;height:100%;font-size:' + (box * 0.34) + 'px;background:radial-gradient(circle at 30% 25%,oklch(0.72 0.11 ' + p.hue + '),oklch(0.5 0.1 ' + p.hue + ') 75%);box-shadow:0 0 0 3px ' + ringColors[i] + ', var(--card-shadow);">' + p.initials + '</div>' +
+            '<div style="position:absolute;bottom:-2px;right:-2px;width:20px;height:20px;border-radius:50%;background:' + badgeColors[i] + ';border:2px solid var(--bg-soft);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:11px;font-weight:800;color:var(--ink);">' + ranks[i] + '</div>' +
+          '</div>' +
+          '<div style="font-size:11px;font-weight:700;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + p.name + '</div>' +
           '<div style="font-size:10px;color:var(--gold);font-weight:800;margin-top:1px;">' + p.points.toLocaleString() + '</div>' +
         '</div>';
-        stepsHtml += '<div style="flex:1;max-width:104px;height:' + barHeights[i] + 'px;background:' + barColors[i] + ';border-radius:10px 10px 0 0;display:flex;align-items:flex-start;justify-content:center;padding-top:6px;font-family:var(--font-display);font-size:18px;font-weight:800;color:var(--ink);">' + ranks[i] + '</div>';
       }
-      podiumEl.innerHTML =
-        '<div style="display:flex;justify-content:center;gap:8px;">' + peopleHtml + '</div>' +
-        '<div style="display:flex;align-items:flex-end;justify-content:center;gap:8px;margin-top:10px;">' + stepsHtml + '</div>';
+      podiumEl.innerHTML = '<div style="display:flex;align-items:flex-end;justify-content:center;gap:10px;">' + html + '</div>';
     }
 
     function renderMyRank(me){
